@@ -198,11 +198,11 @@
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
-            min-height: 400px;
+            min-height: 350px;
         }
 
         .transcript-box {
-            height: 300px;
+            height: 240px;
             overflow-y: auto;
             padding-right: 10px;
             line-height: 1.8;
@@ -213,15 +213,7 @@
         .transcript-line {
             opacity: 0.5;
             transition: all 0.3s;
-            margin-bottom: 12px;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-        }
-
-        .transcript-line:hover {
-            opacity: 0.8;
-            background-color: rgba(0,0,0,0.03);
+            margin-bottom: 8px;
         }
 
         .transcript-line.active {
@@ -229,8 +221,8 @@
             font-weight: bold;
             color: var(--primary-color);
             background-color: var(--highlight-color);
-            border-left: 3px solid var(--primary-color);
-            border-radius: 0 4px 4px 0;
+            border-radius: 4px;
+            padding: 2px 5px;
         }
 
         .btn-study-mode {
@@ -347,16 +339,6 @@
                 <div class="transcript-line" data-time="9">Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play</div>
                 <div class="transcript-line" data-time="18">together every day. That's so sweet. We'll have so much fun together.</div>
                 <div class="transcript-line" data-time="32">I'll read you my favorite story. Come on, you can do it.</div>
-                <div class="transcript-line" data-time="43">Look, dad! The baby in the story is sleeping. Yes, honey, just like you when you were a little baby.</div>
-                <div class="transcript-line" data-time="56">I am big now! I can help mom clean the house and take care of the new baby.</div>
-                <div class="transcript-line" data-time="69">That is amazing, Anna. Your mom will be very happy to hear that. You are a great helper.</div>
-                <div class="transcript-line" data-time="84">Let's finish our breakfast first. Then we can go to the living room and talk to your mother.</div>
-                <div class="transcript-line" data-time="98">Okay, dad. I like these pancakes very much. They are delicious. Thank you!</div>
-                <div class="transcript-line" data-time="112">You're welcome, sweetheart. Drink your orange juice too, it is very good for your health.</div>
-                <div class="transcript-line" data-time="126">Good morning, my loves. What are you two talking about so early in the morning?</div>
-                <div class="transcript-line" data-time="140">Good morning, mom! Look at your belly! Is the baby growing up fast inside there?</div>
-                <div class="transcript-line" data-time="155">Yes, Anna, the baby is growing every day. Soon you will hold your little sibling in your arms.</div>
-                <div class="transcript-line" data-time="170">I cannot wait for that day. I already chose some toys to share with the baby.</div>
             </div>
             <button class="btn-study-mode" id="btn-generate-study">Criar Espaço de Estudo Abaixo</button>
         </div>
@@ -375,23 +357,16 @@
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
-        // Dicionário expandido correspondendo exatamente a todas as novas linhas
+        // Dicionário atualizado com a transcrição correta mapeada por imagem
         const mockTranslations = {
             pt: {
                 "Breakfast is ready everyone. Are you ready? I think she will be excited.": "O café da manhã está pronto, pessoal. Vocês estão prontos? Acho que ela vai ficar animada.",
                 "Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play": "Anna, você gostaria de um irmãozinho ou uma irmãzinha? Eu quero ambos. Eu quero uma irmãzinha para podermos brincar",
                 "together every day. That's so sweet. We'll have so much fun together.": "juntas todos os dias. Isso é tão fofo. Nós vamos nos divertir muito juntas.",
-                "I'll read you my favorite story. Come on, you can do it.": "Eu vou ler para você a minha história favorita. Vamos lá, você consegue.",
-                "Look, dad! The baby in the story is sleeping. Yes, honey, just like you when you were a little baby.": "Olhe, pai! O bebê na história está dormindo. Sim, querida, igual a você quando era um bebêzinho.",
-                "I am big now! I can help mom clean the house and take care of the new baby.": "Eu sou grande agora! Eu posso ajudar a mamãe a limpar a casa e cuidar do novo bebê.",
-                "That is amazing, Anna. Your mom will be very happy to hear that. You are a great helper.": "Isso é incrível, Anna. Sua mãe vai ficar muito feliz em ouvir isso. Você é uma ótima ajudante.",
-                "Let's finish our breakfast first. Then we can go to the living room and talk to your mother.": "Vamos terminar o nosso café da manhã primeiro. Depois podemos ir para a sala e conversar com sua mãe.",
-                "Okay, dad. I like these pancakes very much. They are delicious. Thank you!": "Está bem, pai. Eu gosto muito dessas panquecas. Elas estão deliciosas. Obrigada!",
-                "You're welcome, sweetheart. Drink your orange juice too, it is very good for your health.": "De nada, querida. Beba seu suco de laranja também, é muito bom para a sua saúde.",
-                "Good morning, my loves. What are you two talking about so early in the morning?": "Bom dia, meus amores. Sobre o que vocês dois estão conversando tão cedo de manhã?",
-                "Good morning, mom! Look at your belly! Is the baby growing up fast inside there?": "Bom dia, mamãe! Olhe para a sua barriga! O bebê está crescendo rápido aí dentro?",
-                "Yes, Anna, the baby is growing every day. Soon you will hold your little sibling in your arms.": "Sim, Anna, o bebê está crescendo todo dia. Logo você segurará seu irmãozinho nos braços.",
-                "I cannot wait for that day. I already chose some toys to share with the baby.": "Mal posso esperar por esse dia. Eu já escolhi alguns brinquedos para compartilhar com o bebê."
+                "I'll read you my favorite story. Come on, you can do it.": "Eu vou ler para você a minha história favorita. Vamos lá, você consegue."
+            },
+            es: {
+                "Breakfast is ready everyone. Are you ready? I think she will be excited.": "El desayuno está listo para todos. ¿Están listos? Creo que ella se emocionará."
             }
         };
 
@@ -461,6 +436,7 @@
             }
         });
 
+        // Inicializa o player interativo com o ID correto do vídeo (7SRa1M29cNM)
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '100%',
@@ -504,16 +480,9 @@
             }
         }
 
-        // Permitir clicar na linha para pular para o tempo correto do vídeo
-        transcriptBox.addEventListener('click', (e) => {
-            const line = e.target.closest('.transcript-line');
-            if (line && player && typeof player.seekTo === 'function') {
-                const targetTime = parseFloat(line.getAttribute('data-time'));
-                player.seekTo(targetTime, true);
-            }
-        });
-
         transcriptBox.addEventListener('mouseup', (e) => {
+            if(player && player.getPlayerState() === YT.PlayerState.PLAYING) return;
+
             const selection = window.getSelection().toString().trim();
             if (selection.length > 0) {
                 let translation = "Tradução não disponível para este trecho específico.";
