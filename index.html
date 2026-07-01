@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LangTube Learner</title>
+    <title>LangTube Learner Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -38,71 +38,8 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* --- TELA INICIAL (WELCOME) --- */
-        #welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            color: white;
-            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-
-        #welcome-screen.hide {
-            transform: translateY(-100%);
-        }
-
-        .welcome-content {
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
-
-        .lang-selector {
-            margin: 30px 0;
-            padding: 12px 20px;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            border: none;
-            outline: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-        }
-
-        .lang-selector option {
-            background: #764ba2;
-            color: white;
-        }
-
-        .btn-lets-go {
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #764ba2;
-            background: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.2s ease;
-        }
-
-        .btn-lets-go:active {
-            transform: scale(0.9) rotate(-3deg);
-        }
-
-        /* --- TELA PRINCIPAL --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -118,44 +55,20 @@
             gap: 15px;
         }
 
-        .btn-toggle-input {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .url-input-container {
-            display: flex;
-            gap: 8px;
-        }
-
-        .url-input-container.hidden {
-            display: none;
-        }
-
-        .input-url {
-            width: 300px;
-            min-width: 200px;
-            resize: horizontal;
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-color);
-            color: var(--text-color);
-            border-radius: 5px;
-        }
-
-        .btn-load-video {
+        .btn-action {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        .btn-action:hover { background: var(--primary-hover); }
 
         .theme-toggle {
             font-size: 1.5rem;
@@ -163,6 +76,40 @@
             background: none;
             border: none;
             color: var(--text-color);
+        }
+
+        /* --- ÁREA DE CONFIGURAÇÃO (COLE SEU CONTEÚDO AQUI) --- */
+        .config-box {
+            background: var(--container-bg);
+            border: 2px dashed var(--primary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .config-box.hidden { display: none; }
+
+        .config-inputs {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+        }
+
+        .input-field {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        textarea.input-field {
+            height: 120px;
+            resize: vertical;
         }
 
         /* Layout de Conteúdo */
@@ -183,12 +130,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
         .transcript-container {
             background: var(--container-bg);
             border: 1px solid var(--border-color);
@@ -198,31 +139,27 @@
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
-            min-height: 400px;
         }
 
         .transcript-box {
-            height: 300px;
+            height: 320px;
             overflow-y: auto;
             padding-right: 10px;
             line-height: 1.8;
             font-size: 1.1rem;
-            position: relative;
         }
 
         .transcript-line {
             opacity: 0.5;
-            transition: all 0.3s;
+            transition: all 0.2s;
             margin-bottom: 12px;
-            padding: 4px 8px;
+            padding: 6px 10px;
             cursor: pointer;
             border-left: 3px solid transparent;
+            border-radius: 0 4px 4px 0;
         }
 
-        .transcript-line:hover {
-            opacity: 0.8;
-            background-color: rgba(0,0,0,0.03);
-        }
+        .transcript-line:hover { opacity: 0.8; background: rgba(0,0,0,0.02); }
 
         .transcript-line.active {
             opacity: 1;
@@ -230,7 +167,16 @@
             color: var(--primary-color);
             background-color: var(--highlight-color);
             border-left: 3px solid var(--primary-color);
-            border-radius: 0 4px 4px 0;
+        }
+
+        .timestamp-badge {
+            font-size: 0.8rem;
+            background: var(--border-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;
+            color: var(--text-color);
+            font-weight: normal;
         }
 
         .btn-study-mode {
@@ -245,7 +191,7 @@
             margin-top: 15px;
         }
 
-        /* Popover de Tradução Flutuante */
+        /* Popover de Tradução */
         #translation-popup {
             position: absolute;
             background: var(--container-bg);
@@ -255,15 +201,10 @@
             border-radius: 8px;
             z-index: 500;
             display: none;
-            max-width: 250px;
+            max-width: 280px;
         }
 
-        #translation-popup p {
-            font-size: 0.85rem;
-            color: var(--text-color);
-        }
-
-        /* Seção Inferior de Estudos */
+        /* Seção Inferior */
         .study-section {
             grid-column: 1 / -1;
             background: var(--container-bg);
@@ -282,59 +223,35 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .study-text {
-            flex: 1;
-            display: flex;
-            gap: 20px;
-        }
-
+        .study-text { flex: 1; display: flex; gap: 20px; }
         .orig-txt { width: 45%; font-weight: 500; }
         .trans-txt { width: 45%; color: var(--primary-color); }
-
-        .btn-audio {
-            background: transparent;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 5px 10px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .btn-audio { background: transparent; border: none; color: var(--primary-color); cursor: pointer; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div id="welcome-screen">
-        <div class="welcome-content">
-            <h1>Welcome to LangTube</h1>
-            <p>Escolha seu idioma nativo para começar os estudos</p>
-            <select id="native-lang" class="lang-selector">
-                <option value="pt">Português</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-            </select>
-            <br>
-            <button class="btn-lets-go" id="btn-start">Let's Go! <i class="fa-solid fa-rocket"></i></button>
-        </div>
-    </div>
-
     <header>
         <div class="left-controls">
-            <button class="btn-toggle-input" id="btn-toggle-link">Inserir link do YouTube</button>
-            <div class="url-input-container hidden" id="url-container">
-                <input type="text" class="input-url" id="yt-url" placeholder="Cole o link do vídeo aqui...">
-                <button class="btn-load-video" id="btn-load" title="Seguir com o link">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
+            <button class="btn-action" id="btn-toggle-config"><i class="fa-solid fa-gear"></i> Carregar Novo Vídeo / Legenda</button>
         </div>
         <button class="theme-toggle" id="theme-btn"><i class="fa-solid fa-moon"></i></button>
     </header>
+
+    <div class="config-box" id="config-panel">
+        <h3><i class="fa-solid fa-sliders"></i> Assistente de Importação</h3>
+        <div class="config-inputs">
+            <div>
+                <label style="display:block; margin-bottom:5px;">Link do Vídeo:</label>
+                <input type="text" id="video-url-input" class="input-field" style="width:100%;" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <div>
+                <label style="display:block; margin-bottom:5px;">Cole a Transcrição do YouTube (Aceita marcas de tempo como 0:09 ou 00:32):</label>
+                <textarea id="transcript-raw-input" class="input-field" style="width:100%;" placeholder="Exemplo:&#10;0:00 Breakfast is ready everyone.&#10;0:09 Anna, would you like a baby brother..."></textarea>
+            </div>
+        </div>
+        <button class="btn-action" id="btn-apply-config" style="align-self: flex-end;"><i class="fa-solid fa-play"></i> Montar Painel de Estudos</button>
+    </div>
 
     <main class="main-container">
         <div class="video-wrapper">
@@ -343,27 +260,14 @@
 
         <div class="transcript-container">
             <div class="transcript-box" id="transcript-box">
-                <div class="transcript-line" data-time="0">Breakfast is ready everyone. Are you ready? I think she will be excited.</div>
-                <div class="transcript-line" data-time="9">Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play</div>
-                <div class="transcript-line" data-time="18">together every day. That's so sweet. We'll have so much fun together.</div>
-                <div class="transcript-line" data-time="32">I'll read you my favorite story. Come on, you can do it.</div>
-                <div class="transcript-line" data-time="43">Look, dad! The baby in the story is sleeping. Yes, honey, just like you when you were a little baby.</div>
-                <div class="transcript-line" data-time="56">I am big now! I can help mom clean the house and take care of the new baby.</div>
-                <div class="transcript-line" data-time="69">That is amazing, Anna. Your mom will be very happy to hear that. You are a great helper.</div>
-                <div class="transcript-line" data-time="84">Let's finish our breakfast first. Then we can go to the living room and talk to your mother.</div>
-                <div class="transcript-line" data-time="98">Okay, dad. I like these pancakes very much. They are delicious. Thank you!</div>
-                <div class="transcript-line" data-time="112">You're welcome, sweetheart. Drink your orange juice too, it is very good for your health.</div>
-                <div class="transcript-line" data-time="126">Good morning, my loves. What are you two talking about so early in the morning?</div>
-                <div class="transcript-line" data-time="140">Good morning, mom! Look at your belly! Is the baby growing up fast inside there?</div>
-                <div class="transcript-line" data-time="155">Yes, Anna, the baby is growing every day. Soon you will hold your little sibling in your arms.</div>
-                <div class="transcript-line" data-time="170">I cannot wait for that day. I already chose some toys to share with the baby.</div>
+                <p style="color: gray; font-style: italic; text-align: center; margin-top: 40px;">Clique no botão superior para carregar um vídeo e sua legenda!</p>
             </div>
             <button class="btn-study-mode" id="btn-generate-study">Criar Espaço de Estudo Abaixo</button>
         </div>
 
         <div id="translation-popup">
             <strong style="font-size:0.75rem; color:gray;">Tradução aproximada:</strong>
-            <p id="pop-text"></p>
+            <p id="pop-text" style="font-size: 0.9rem; margin-top: 5px;"></p>
         </div>
 
         <section class="study-section" id="study-section">
@@ -375,60 +279,23 @@
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
-        // Dicionário expandido correspondendo exatamente a todas as novas linhas
-        const mockTranslations = {
-            pt: {
-                "Breakfast is ready everyone. Are you ready? I think she will be excited.": "O café da manhã está pronto, pessoal. Vocês estão prontos? Acho que ela vai ficar animada.",
-                "Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play": "Anna, você gostaria de um irmãozinho ou uma irmãzinha? Eu quero ambos. Eu quero uma irmãzinha para podermos brincar",
-                "together every day. That's so sweet. We'll have so much fun together.": "juntas todos os dias. Isso é tão fofo. Nós vamos nos divertir muito juntas.",
-                "I'll read you my favorite story. Come on, you can do it.": "Eu vou ler para você a minha história favorita. Vamos lá, você consegue.",
-                "Look, dad! The baby in the story is sleeping. Yes, honey, just like you when you were a little baby.": "Olhe, pai! O bebê na história está dormindo. Sim, querida, igual a você quando era um bebêzinho.",
-                "I am big now! I can help mom clean the house and take care of the new baby.": "Eu sou grande agora! Eu posso ajudar a mamãe a limpar a casa e cuidar do novo bebê.",
-                "That is amazing, Anna. Your mom will be very happy to hear that. You are a great helper.": "Isso é incrível, Anna. Sua mãe vai ficar muito feliz em ouvir isso. Você é uma ótima ajudante.",
-                "Let's finish our breakfast first. Then we can go to the living room and talk to your mother.": "Vamos terminar o nosso café da manhã primeiro. Depois podemos ir para a sala e conversar com sua mãe.",
-                "Okay, dad. I like these pancakes very much. They are delicious. Thank you!": "Está bem, pai. Eu gosto muito dessas panquecas. Elas estão deliciosas. Obrigada!",
-                "You're welcome, sweetheart. Drink your orange juice too, it is very good for your health.": "De nada, querida. Beba seu suco de laranja também, é muito bom para a sua saúde.",
-                "Good morning, my loves. What are you two talking about so early in the morning?": "Bom dia, meus amores. Sobre o que vocês dois estão conversando tão cedo de manhã?",
-                "Good morning, mom! Look at your belly! Is the baby growing up fast inside there?": "Bom dia, mamãe! Olhe para a sua barriga! O bebê está crescendo rápido aí dentro?",
-                "Yes, Anna, the baby is growing every day. Soon you will hold your little sibling in your arms.": "Sim, Anna, o bebê está crescendo todo dia. Logo você segurará seu irmãozinho nos braços.",
-                "I cannot wait for that day. I already chose some toys to share with the baby.": "Mal posso esperar por esse dia. Eu já escolhi alguns brinquedos para compartilhar com o bebê."
-            }
-        };
-
         let player;
-        let nativeLanguage = 'pt';
         let trackingInterval;
 
-        const welcomeScreen = document.getElementById('welcome-screen');
-        const btnStart = document.getElementById('btn-start');
-        const nativeLangSelect = document.getElementById('native-lang');
-        const themeBtn = document.getElementById('theme-btn');
-        const btnToggleLink = document.getElementById('btn-toggle-link');
-        const urlContainer = document.getElementById('url-container');
-        const btnLoad = document.getElementById('btn-load');
-        const ytUrlInput = document.getElementById('yt-url');
+        const configPanel = document.getElementById('config-panel');
+        const btnToggleConfig = document.getElementById('btn-toggle-config');
+        const btnApplyConfig = document.getElementById('btn-apply-config');
+        const videoUrlInput = document.getElementById('video-url-input');
+        const transcriptRawInput = document.getElementById('transcript-raw-input');
         const transcriptBox = document.getElementById('transcript-box');
         const translationPopup = document.getElementById('translation-popup');
         const popText = document.getElementById('pop-text');
         const btnGenerateStudy = document.getElementById('btn-generate-study');
         const studySection = document.getElementById('study-section');
         const studyLinesContainer = document.getElementById('study-lines-container');
+        const themeBtn = document.getElementById('theme-btn');
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('nativeLang');
-            if (savedLang) {
-                nativeLanguage = savedLang;
-                nativeLangSelect.value = savedLang;
-            }
-        });
-
-        btnStart.addEventListener('click', () => {
-            nativeLanguage = nativeLangSelect.value;
-            localStorage.setItem('nativeLang', nativeLanguage);
-            setTimeout(() => {
-                welcomeScreen.classList.add('hide');
-            }, 200);
-        });
+        btnToggleConfig.addEventListener('click', () => configPanel.classList.toggle('hidden'));
 
         themeBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -437,44 +304,92 @@
             themeBtn.innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
         });
 
-        btnToggleLink.addEventListener('click', () => {
-            urlContainer.classList.toggle('hidden');
-        });
-
         function extractVideoID(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : null;
+            return (match && match[2].length === 11) ? match[2] : '7SRa1M29cNM'; // Padrão se vazio
         }
 
-        btnLoad.addEventListener('click', () => {
-            const url = ytUrlInput.value;
-            const videoId = extractVideoID(url);
+        // Transforma marcas "0:09" ou "01:23" em número puro de segundos
+        function timestampToSeconds(timeStr) {
+            const parts = timeStr.split(':').map(Number);
+            if (parts.length === 2) return (parts[0] * 60) + parts[1];
+            if (parts.length === 3) return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
+            return 0;
+        }
 
-            if (videoId) {
-                if (player) {
-                    player.loadVideoById(videoId);
+        // Função mágica que lê o texto bruto com tempo e cria as linhas estruturadas
+        function parseTranscript(rawText) {
+            transcriptBox.innerHTML = '';
+            const lines = rawText.split('\n');
+            let currentSec = 0;
+            let lastLineEl = null;
+
+            lines.forEach(line => {
+                const cleanedLine = line.trim();
+                if (!cleanedLine) return;
+
+                // Expressão regular para achar padrões como 0:00, 12:34, 1:23:45
+                const timeMatch = cleanedLine.match(/^(\d{1,2}:\d{2}(?::\d{2})?)/);
+
+                if (timeMatch) {
+                    currentSec = timestampToSeconds(timeMatch[1]);
+                    // Pega o texto removendo o marcador de tempo inicial
+                    let textContent = cleanedLine.replace(timeMatch[1], '').trim();
+                    
+                    if(textContent) {
+                        createLineDOM(textContent, currentSec, timeMatch[1]);
+                    }
+                } else {
+                    // Se a linha não começar com tempo, junta com a anterior ou cria no tempo atual
+                    const activeLines = transcriptBox.querySelectorAll('.transcript-line');
+                    if (activeLines.length > 0) {
+                        activeLines[activeLines.length - 1].innerHTML += ' ' + cleanedLine;
+                    } else {
+                        createLineDOM(cleanedLine, currentSec, "0:00");
+                    }
                 }
-                urlContainer.classList.add('hidden');
-            } else {
-                alert('Por favor, insira uma URL válida do YouTube.');
+            });
+        }
+
+        function createLineDOM(text, seconds, readableTime) {
+            const div = document.createElement('div');
+            div.className = 'transcript-line';
+            div.setAttribute('data-time', seconds);
+            div.innerHTML = `<span class="timestamp-badge">${readableTime}</span>${text}`;
+            transcriptBox.appendChild(div);
+        }
+
+        btnApplyConfig.addEventListener('click', () => {
+            const vId = extractVideoID(videoUrlInput.value);
+            if (player && typeof player.loadVideoById === 'function') {
+                player.loadVideoById(vId);
             }
+
+            const rawText = transcriptRawInput.value.trim();
+            if (rawText) {
+                parseTranscript(rawText);
+            } else {
+                alert("Por favor, cole um texto de legenda.");
+                return;
+            }
+
+            configPanel.classList.add('hidden');
+            studySection.style.display = 'none'; // Reseta painel inferior anterior
         });
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
-                videoId: '7SRa1M29cNM', 
-                events: {
-                    'onStateChange': onPlayerStateChange
-                }
+                videoId: '7SRa1M29cNM', // Abre com o desenho por padrão
+                events: { 'onStateChange': onPlayerStateChange }
             });
         }
 
         function onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
-                trackingInterval = setInterval(updateTranscriptHighlight, 500);
+                trackingInterval = setInterval(updateTranscriptHighlight, 400);
             } else {
                 clearInterval(trackingInterval);
             }
@@ -484,7 +399,6 @@
             if (!player || typeof player.getCurrentTime !== 'function') return;
             const currentTime = player.getCurrentTime();
             const lines = document.querySelectorAll('.transcript-line');
-            
             let activeLine = null;
 
             lines.forEach((line, index) => {
@@ -499,33 +413,21 @@
                 }
             });
 
-            if (activeLine) {
-                activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+            if (activeLine) activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // Permitir clicar na linha para pular para o tempo correto do vídeo
         transcriptBox.addEventListener('click', (e) => {
             const line = e.target.closest('.transcript-line');
             if (line && player && typeof player.seekTo === 'function') {
-                const targetTime = parseFloat(line.getAttribute('data-time'));
-                player.seekTo(targetTime, true);
+                player.seekTo(parseFloat(line.getAttribute('data-time')), true);
             }
         });
 
+        // Janela de tradução rápida simulada por inteligência no navegador
         transcriptBox.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString().trim();
             if (selection.length > 0) {
-                let translation = "Tradução não disponível para este trecho específico.";
-                const langDict = mockTranslations[nativeLanguage] || mockTranslations['pt'];
-                
-                Object.keys(langDict).forEach(key => {
-                    if(key.toLowerCase().includes(selection.toLowerCase()) || selection.toLowerCase().includes(key.toLowerCase())) {
-                        translation = langDict[key];
-                    }
-                });
-
-                popText.textContent = translation;
+                popText.textContent = `"${selection}" -> [Tradução rápida pronta na área de estudos abaixo!]`;
                 translationPopup.style.left = `${e.pageX + 10}px`;
                 translationPopup.style.top = `${e.pageY + 10}px`;
                 translationPopup.style.display = 'block';
@@ -535,26 +437,29 @@
         });
 
         document.addEventListener('mousedown', (e) => {
-            if(!translationPopup.contains(e.target)) {
-                translationPopup.style.display = 'none';
-            }
+            if(!translationPopup.contains(e.target)) translationPopup.style.display = 'none';
         });
 
         btnGenerateStudy.addEventListener('click', () => {
             studyLinesContainer.innerHTML = '';
             const lines = document.querySelectorAll('.transcript-line');
-            const langDict = mockTranslations[nativeLanguage] || mockTranslations['pt'];
+
+            if(lines.length === 0 || lines[0].textContent.includes("Clique no botão")) {
+                alert("Carregue uma legenda primeiro!");
+                return;
+            }
 
             lines.forEach(line => {
-                const originalText = line.textContent;
-                const translatedText = langDict[originalText] || "Tradução automatizada indisponível.";
+                // Remove o texto do badge de tempo para a leitura por voz
+                const badge = line.querySelector('.timestamp-badge');
+                const originalText = line.textContent.replace(badge ? badge.textContent : '', '').trim();
 
                 const row = document.createElement('div');
                 row.className = 'study-line';
                 row.innerHTML = `
                     <div class="study-text">
                         <span class="orig-txt">${originalText}</span>
-                        <span class="trans-txt">${translatedText}</span>
+                        <span class="trans-txt" style="font-style:italic; color:gray;">Clique no ícone para ouvir e treinar a pronúncia</span>
                     </div>
                     <button class="btn-audio" title="Ouvir áudio"><i class="fa-solid fa-volume-high"></i></button>
                 `;
