@@ -14,8 +14,6 @@
             --primary-hover: #357abd;
             --border-color: #e0e0e0;
             --highlight-color: #fff3cd;
-            --info-bg: #e1f5fe;
-            --info-text: #0288d1;
         }
 
         [data-theme="dark"] {
@@ -26,8 +24,6 @@
             --primary-hover: #9c4dcc;
             --border-color: #333333;
             --highlight-color: #443d2c;
-            --info-bg: #1c2835;
-            --info-text: #b3e5fc;
         }
 
         * {
@@ -53,6 +49,12 @@
             border-bottom: 1px solid var(--border-color);
         }
 
+        .left-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .btn-action {
             background: var(--primary-color);
             color: white;
@@ -76,7 +78,7 @@
             color: var(--text-color);
         }
 
-        /* ÁREA DE CONFIGURAÇÃO */
+        /* --- ÁREA DE CONFIGURAÇÃO (COLE SEU CONTEÚDO AQUI) --- */
         .config-box {
             background: var(--container-bg);
             border: 2px dashed var(--primary-color);
@@ -135,26 +137,12 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            justify-content: space-between;
             height: 100%;
         }
 
-        /* Banner informativo de funcionalidade */
-        .info-tip-bar {
-            background-color: var(--info-bg);
-            color: var(--info-text);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.88rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-left: 4px solid var(--primary-color);
-        }
-
         .transcript-box {
-            height: 280px;
+            height: 320px;
             overflow-y: auto;
             padding-right: 10px;
             line-height: 1.8;
@@ -181,6 +169,16 @@
             border-left: 3px solid var(--primary-color);
         }
 
+        .timestamp-badge {
+            font-size: 0.8rem;
+            background: var(--border-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 8px;
+            color: var(--text-color);
+            font-weight: normal;
+        }
+
         .btn-study-mode {
             width: 100%;
             padding: 12px;
@@ -190,7 +188,7 @@
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 15px;
         }
 
         /* Popover de Tradução */
@@ -248,8 +246,8 @@
                 <input type="text" id="video-url-input" class="input-field" style="width:100%;" placeholder="https://www.youtube.com/watch?v=...">
             </div>
             <div>
-                <label style="display:block; margin-bottom:5px;">Cole a Transcrição Bruta do YouTube:</label>
-                <textarea id="transcript-raw-input" class="input-field" style="width:100%;" placeholder="Cole direto os blocos copiados com marcas de tempo ou segundos..."></textarea>
+                <label style="display:block; margin-bottom:5px;">Cole a Transcrição do YouTube (Aceita marcas de tempo como 0:09 ou 00:32):</label>
+                <textarea id="transcript-raw-input" class="input-field" style="width:100%;" placeholder="Exemplo:&#10;0:00 Breakfast is ready everyone.&#10;0:09 Anna, would you like a baby brother..."></textarea>
             </div>
         </div>
         <button class="btn-action" id="btn-apply-config" style="align-self: flex-end;"><i class="fa-solid fa-play"></i> Montar Painel de Estudos</button>
@@ -261,11 +259,6 @@
         </div>
 
         <div class="transcript-container">
-            <div class="info-tip-bar">
-                <i class="fa-solid fa-circle-info"></i>
-                <span><strong>Dica de Estudo:</strong> Selecione qualquer palavra ou trecho do texto com o mouse para ver a tradução instantânea!</span>
-            </div>
-
             <div class="transcript-box" id="transcript-box">
                 <p style="color: gray; font-style: italic; text-align: center; margin-top: 40px;">Clique no botão superior para carregar um vídeo e sua legenda!</p>
             </div>
@@ -273,8 +266,8 @@
         </div>
 
         <div id="translation-popup">
-            <strong style="font-size:0.75rem; color:gray;">Tradução rápida:</strong>
-            <p id="pop-text" style="font-size: 0.9rem; margin-top: 5px; font-weight: 500;"></p>
+            <strong style="font-size:0.75rem; color:gray;">Tradução aproximada:</strong>
+            <p id="pop-text" style="font-size: 0.9rem; margin-top: 5px;"></p>
         </div>
 
         <section class="study-section" id="study-section">
@@ -314,65 +307,56 @@
         function extractVideoID(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             const match = url.match(regExp);
-            return (match && match[2].length === 11) ? match[2] : '7SRa1M29cNM';
+            return (match && match[2].length === 11) ? match[2] : '7SRa1M29cNM'; // Padrão se vazio
         }
 
+        // Transforma marcas "0:09" ou "01:23" em número puro de segundos
         function timestampToSeconds(timeStr) {
-            // Se o texto vier como "41 segundos", extrai apenas o número
-            if (timeStr.includes('segundo')) {
-                return parseInt(timeStr.replace(/\D/g, ''), 10) || 0;
-            }
             const parts = timeStr.split(':').map(Number);
             if (parts.length === 2) return (parts[0] * 60) + parts[1];
             if (parts.length === 3) return (parts[0] * 3600) + (parts[1] * 60) + parts[2];
             return 0;
         }
 
-        // Nova função inteligente de limpeza e processamento
+        // Função mágica que lê o texto bruto com tempo e cria as linhas estruturadas
         function parseTranscript(rawText) {
             transcriptBox.innerHTML = '';
             const lines = rawText.split('\n');
             let currentSec = 0;
+            let lastLineEl = null;
 
             lines.forEach(line => {
-                let cleanedLine = line.trim();
+                const cleanedLine = line.trim();
                 if (!cleanedLine) return;
 
-                // 1. Limpeza crucial: Remove tags de som entre colchetes como [music], [laughter], etc.
-                cleanedLine = cleanedLine.replace(/\[.*?\]/g, '').trim();
-                if (!cleanedLine) return; // Se a linha só tinha som, pula
-
-                // 2. Tenta capturar carimbos de tempo tradicionais (ex: 0:09) ou customizados (ex: 9 segundos)
-                const timeMatch = cleanedLine.match(/^(\d{1,2}:\d{2}(?::\d{2})?)/) || cleanedLine.match(/^(\d+\s*segundo[s]?)/i);
+                // Expressão regular para achar padrões como 0:00, 12:34, 1:23:45
+                const timeMatch = cleanedLine.match(/^(\d{1,2}:\d{2}(?::\d{2})?)/);
 
                 if (timeMatch) {
                     currentSec = timestampToSeconds(timeMatch[1]);
-                    // Extrai o texto removendo a marca de tempo inicial
-                    let textContent = cleanedLine.substring(timeMatch[0].length).trim();
+                    // Pega o texto removendo o marcador de tempo inicial
+                    let textContent = cleanedLine.replace(timeMatch[1], '').trim();
                     
-                    // Remove hifens soltos criados por tempos textuais residuais
-                    textContent = textContent.replace(/^[^a-zA-Z0-9]+/, '').trim();
-
                     if(textContent) {
-                        createLineDOM(textContent, currentSec);
+                        createLineDOM(textContent, currentSec, timeMatch[1]);
                     }
                 } else {
-                    // Se não houver marca de tempo, anexa ao elemento anterior ou cria no tempo corrente
+                    // Se a linha não começar com tempo, junta com a anterior ou cria no tempo atual
                     const activeLines = transcriptBox.querySelectorAll('.transcript-line');
                     if (activeLines.length > 0) {
-                        activeLines[activeLines.length - 1].innerText += ' ' + cleanedLine;
+                        activeLines[activeLines.length - 1].innerHTML += ' ' + cleanedLine;
                     } else {
-                        createLineDOM(cleanedLine, currentSec);
+                        createLineDOM(cleanedLine, currentSec, "0:00");
                     }
                 }
             });
         }
 
-        function createLineDOM(text, seconds) {
+        function createLineDOM(text, seconds, readableTime) {
             const div = document.createElement('div');
             div.className = 'transcript-line';
             div.setAttribute('data-time', seconds);
-            div.innerText = text; // Insere o texto limpo sem marcas de tempo na tela
+            div.innerHTML = `<span class="timestamp-badge">${readableTime}</span>${text}`;
             transcriptBox.appendChild(div);
         }
 
@@ -391,21 +375,21 @@
             }
 
             configPanel.classList.add('hidden');
-            studySection.style.display = 'none';
+            studySection.style.display = 'none'; // Reseta painel inferior anterior
         });
 
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
-                videoId: '7SRa1M29cNM',
+                videoId: '7SRa1M29cNM', // Abre com o desenho por padrão
                 events: { 'onStateChange': onPlayerStateChange }
             });
         }
 
         function onPlayerStateChange(event) {
             if (event.data == YT.PlayerState.PLAYING) {
-                trackingInterval = setInterval(updateTranscriptHighlight, 300);
+                trackingInterval = setInterval(updateTranscriptHighlight, 400);
             } else {
                 clearInterval(trackingInterval);
             }
@@ -439,11 +423,11 @@
             }
         });
 
-        // Captura inteligente e limpa da seleção do usuário
+        // Janela de tradução rápida simulada por inteligência no navegador
         transcriptBox.addEventListener('mouseup', (e) => {
             const selection = window.getSelection().toString().trim();
             if (selection.length > 0) {
-                popText.textContent = `"${selection}" foi selecionada. Veja a pronúncia e estude esta linha inteira no espaço inferior!`;
+                popText.textContent = `"${selection}" -> [Tradução rápida pronta na área de estudos abaixo!]`;
                 translationPopup.style.left = `${e.pageX + 10}px`;
                 translationPopup.style.top = `${e.pageY + 10}px`;
                 translationPopup.style.display = 'block';
@@ -466,14 +450,16 @@
             }
 
             lines.forEach(line => {
-                const originalText = line.innerText.trim();
+                // Remove o texto do badge de tempo para a leitura por voz
+                const badge = line.querySelector('.timestamp-badge');
+                const originalText = line.textContent.replace(badge ? badge.textContent : '', '').trim();
 
                 const row = document.createElement('div');
                 row.className = 'study-line';
                 row.innerHTML = `
                     <div class="study-text">
                         <span class="orig-txt">${originalText}</span>
-                        <span class="trans-txt" style="font-style:italic; color:gray;">Toque no alto-falante ao lado para praticar o listening</span>
+                        <span class="trans-txt" style="font-style:italic; color:gray;">Clique no ícone para ouvir e treinar a pronúncia</span>
                     </div>
                     <button class="btn-audio" title="Ouvir áudio"><i class="fa-solid fa-volume-high"></i></button>
                 `;
