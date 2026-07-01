@@ -335,16 +335,10 @@
 
         <div class="transcript-container">
             <div class="transcript-box" id="transcript-box">
-                <div class="transcript-line" data-time="0">Welcome to this English practice video.</div>
-                <div class="transcript-line" data-time="3">Today we are going to learn some very useful everyday expressions.</div>
-                <div class="transcript-line" data-time="7">Pay close attention to the pronunciation of each word.</div>
-                <div class="transcript-line" data-time="11">Repetition is the key to mastering a new language.</div>
-                <div class="transcript-line" data-time="15">If you need to, you can pause the video at any moment.</div>
-                <div class="transcript-line" data-time="19">Make sure to practice these sentences with your friends.</div>
-                <div class="transcript-line" data-time="23">Learning a language should be a fun and consistent journey.</div>
-                <div class="transcript-line" data-time="27">Don't be afraid of making mistakes along the way.</div>
-                <div class="transcript-line" data-time="31">Every mistake is a step closer to fluency.</div>
-                <div class="transcript-line" data-time="35">Thank you for watching and let's get started!</div>
+                <div class="transcript-line" data-time="0">Breakfast is ready everyone. Are you ready? I think she will be excited.</div>
+                <div class="transcript-line" data-time="9">Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play</div>
+                <div class="transcript-line" data-time="18">together every day. That's so sweet. We'll have so much fun together.</div>
+                <div class="transcript-line" data-time="32">I'll read you my favorite story. Come on, you can do it.</div>
             </div>
             <button class="btn-study-mode" id="btn-generate-study">Criar Espaço de Estudo Abaixo</button>
         </div>
@@ -363,22 +357,16 @@
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
+        // Dicionário atualizado com a transcrição correta mapeada por imagem
         const mockTranslations = {
             pt: {
-                "Welcome to this English practice video.": "Bem-vindo a este vídeo de prática de inglês.",
-                "Today we are going to learn some very useful everyday expressions.": "Hoje aprenderemos algumas expressões cotidianas muito úteis.",
-                "Pay close attention to the pronunciation of each word.": "Preste muita atenção à pronúncia de cada palavra.",
-                "Repetition is the key to mastering a new language.": "A repetição é a chave para dominar um novo idioma.",
-                "If you need to, you can pause the video at any moment.": "Se precisar, você pode pausar o vídeo a qualquer momento.",
-                "Make sure to practice these sentences with your friends.": "Certifique-se de praticar estas frases com seus amigos.",
-                "Learning a language should be a fun and consistent journey.": "Aprender um idioma deve ser uma jornada divertida e consistente.",
-                "Don't be afraid of making mistakes along the way.": "Não tenha medo de cometer erros ao longo do caminho.",
-                "Every mistake is a step closer to fluency.": "Cada erro é um passo mais próximo da fluência.",
-                "Thank you for watching and let's get started!": "Obrigado por assistir e vamos começar!"
+                "Breakfast is ready everyone. Are you ready? I think she will be excited.": "O café da manhã está pronto, pessoal. Vocês estão prontos? Acho que ela vai ficar animada.",
+                "Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play": "Anna, você gostaria de um irmãozinho ou uma irmãzinha? Eu quero ambos. Eu quero uma irmãzinha para podermos brincar",
+                "together every day. That's so sweet. We'll have so much fun together.": "juntas todos os dias. Isso é tão fofo. Nós vamos nos divertir muito juntas.",
+                "I'll read you my favorite story. Come on, you can do it.": "Eu vou ler para você a minha história favorita. Vamos lá, você consegue."
             },
             es: {
-                "Welcome to this English practice video.": "Bienvenido a este video de práctica de inglés.",
-                "Today we are going to learn some very useful everyday expressions.": "Hoy vamos a aprender algunas expresiones cotidianas muy útiles."
+                "Breakfast is ready everyone. Are you ready? I think she will be excited.": "El desayuno está listo para todos. ¿Están listos? Creo que ella se emocionará."
             }
         };
 
@@ -442,18 +430,18 @@
                 if (player) {
                     player.loadVideoById(videoId);
                 }
-                // Agora apenas recolhe a caixa expansível ao carregar, sem sumir com o botão principal do cabeçalho
                 urlContainer.classList.add('hidden');
             } else {
                 alert('Por favor, insira uma URL válida do YouTube.');
             }
         });
 
+        // Inicializa o player interativo com o ID correto do vídeo (7SRa1M29cNM)
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '100%',
                 width: '100%',
-                videoId: '9bZkp7q19f0', 
+                videoId: '7SRa1M29cNM', 
                 events: {
                     'onStateChange': onPlayerStateChange
                 }
