@@ -198,11 +198,11 @@
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
-            min-height: 350px;
+            min-height: 400px;
         }
 
         .transcript-box {
-            height: 240px;
+            height: 300px;
             overflow-y: auto;
             padding-right: 10px;
             line-height: 1.8;
@@ -211,9 +211,26 @@
         }
 
         .transcript-line {
-            opacity: 0.8;
+            opacity: 0.5;
             transition: all 0.3s;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .transcript-line:hover {
+            opacity: 0.8;
+            background-color: rgba(0,0,0,0.03);
+        }
+
+        .transcript-line.active {
+            opacity: 1;
+            font-weight: bold;
+            color: var(--primary-color);
+            background-color: var(--highlight-color);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 0 4px 4px 0;
         }
 
         .btn-study-mode {
@@ -321,21 +338,25 @@
 
     <main class="main-container">
         <div class="video-wrapper">
-            <iframe id="video-iframe" src="https://www.youtube.com/embed/9bZkp7q19f0" allowfullscreen></iframe>
+            <div id="player"></div>
         </div>
 
         <div class="transcript-container">
             <div class="transcript-box" id="transcript-box">
-                <div class="transcript-line">Welcome to this English practice video.</div>
-                <div class="transcript-line">Today we are going to learn some very useful everyday expressions.</div>
-                <div class="transcript-line">Pay close attention to the pronunciation of each word.</div>
-                <div class="transcript-line">Repetition is the key to mastering a new language.</div>
-                <div class="transcript-line">If you need to, you can pause the video at any moment.</div>
-                <div class="transcript-line">Make sure to practice these sentences with your friends.</div>
-                <div class="transcript-line">Learning a language should be a fun and consistent journey.</div>
-                <div class="transcript-line">Don't be afraid of making mistakes along the way.</div>
-                <div class="transcript-line">Every mistake is a step closer to fluency.</div>
-                <div class="transcript-line">Thank you for watching and let's get started!</div>
+                <div class="transcript-line" data-time="0">Breakfast is ready everyone. Are you ready? I think she will be excited.</div>
+                <div class="transcript-line" data-time="9">Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play</div>
+                <div class="transcript-line" data-time="18">together every day. That's so sweet. We'll have so much fun together.</div>
+                <div class="transcript-line" data-time="32">I'll read you my favorite story. Come on, you can do it.</div>
+                <div class="transcript-line" data-time="43">Look, dad! The baby in the story is sleeping. Yes, honey, just like you when you were a little baby.</div>
+                <div class="transcript-line" data-time="56">I am big now! I can help mom clean the house and take care of the new baby.</div>
+                <div class="transcript-line" data-time="69">That is amazing, Anna. Your mom will be very happy to hear that. You are a great helper.</div>
+                <div class="transcript-line" data-time="84">Let's finish our breakfast first. Then we can go to the living room and talk to your mother.</div>
+                <div class="transcript-line" data-time="98">Okay, dad. I like these pancakes very much. They are delicious. Thank you!</div>
+                <div class="transcript-line" data-time="112">You're welcome, sweetheart. Drink your orange juice too, it is very good for your health.</div>
+                <div class="transcript-line" data-time="126">Good morning, my loves. What are you two talking about so early in the morning?</div>
+                <div class="transcript-line" data-time="140">Good morning, mom! Look at your belly! Is the baby growing up fast inside there?</div>
+                <div class="transcript-line" data-time="155">Yes, Anna, the baby is growing every day. Soon you will hold your little sibling in your arms.</div>
+                <div class="transcript-line" data-time="170">I cannot wait for that day. I already chose some toys to share with the baby.</div>
             </div>
             <button class="btn-study-mode" id="btn-generate-study">Criar Espaço de Estudo Abaixo</button>
         </div>
@@ -351,27 +372,32 @@
         </section>
     </main>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
+
     <script>
+        // Dicionário expandido correspondendo exatamente a todas as novas linhas
         const mockTranslations = {
             pt: {
-                "Welcome to this English practice video.": "Bem-vindo a este vídeo de prática de inglês.",
-                "Today we are going to learn some very useful everyday expressions.": "Hoje aprenderemos algumas expressões cotidianas muito úteis.",
-                "Pay close attention to the pronunciation of each word.": "Preste muita atenção à pronúncia de cada palavra.",
-                "Repetition is the key to mastering a new language.": "A repetição é a chave para dominar um novo idioma.",
-                "If you need to, you can pause the video at any moment.": "Se precisar, você pode pausar o vídeo a qualquer momento.",
-                "Make sure to practice these sentences with your friends.": "Certifique-se de praticar estas frases com seus amigos.",
-                "Learning a language should be a fun and consistent journey.": "Aprender um idioma deve ser uma jornada divertida e consistente.",
-                "Don't be afraid of making mistakes along the way.": "Não tenha medo de cometer erros ao longo do caminho.",
-                "Every mistake is a step closer to fluency.": "Cada erro é um passo mais próximo da fluência.",
-                "Thank you for watching and let's get started!": "Obrigado por assistir e vamos começar!"
-            },
-            es: {
-                "Welcome to this English practice video.": "Bienvenido a este video de práctica de inglés.",
-                "Today we are going to learn some very useful everyday expressions.": "Hoy vamos a aprender algunas expresiones cotidianas muy útiles."
+                "Breakfast is ready everyone. Are you ready? I think she will be excited.": "O café da manhã está pronto, pessoal. Vocês estão prontos? Acho que ela vai ficar animada.",
+                "Anna, would you like a baby brother or a baby sister? I want both. I want a baby sister so we can play": "Anna, você gostaria de um irmãozinho ou uma irmãzinha? Eu quero ambos. Eu quero uma irmãzinha para podermos brincar",
+                "together every day. That's so sweet. We'll have so much fun together.": "juntas todos os dias. Isso é tão fofo. Nós vamos nos divertir muito juntas.",
+                "I'll read you my favorite story. Come on, you can do it.": "Eu vou ler para você a minha história favorita. Vamos lá, você consegue.",
+                "Look, dad! The baby in the story is sleeping. Yes, honey, just like you when you were a little baby.": "Olhe, pai! O bebê na história está dormindo. Sim, querida, igual a você quando era um bebêzinho.",
+                "I am big now! I can help mom clean the house and take care of the new baby.": "Eu sou grande agora! Eu posso ajudar a mamãe a limpar a casa e cuidar do novo bebê.",
+                "That is amazing, Anna. Your mom will be very happy to hear that. You are a great helper.": "Isso é incrível, Anna. Sua mãe vai ficar muito feliz em ouvir isso. Você é uma ótima ajudante.",
+                "Let's finish our breakfast first. Then we can go to the living room and talk to your mother.": "Vamos terminar o nosso café da manhã primeiro. Depois podemos ir para a sala e conversar com sua mãe.",
+                "Okay, dad. I like these pancakes very much. They are delicious. Thank you!": "Está bem, pai. Eu gosto muito dessas panquecas. Elas estão deliciosas. Obrigada!",
+                "You're welcome, sweetheart. Drink your orange juice too, it is very good for your health.": "De nada, querida. Beba seu suco de laranja também, é muito bom para a sua saúde.",
+                "Good morning, my loves. What are you two talking about so early in the morning?": "Bom dia, meus amores. Sobre o que vocês dois estão conversando tão cedo de manhã?",
+                "Good morning, mom! Look at your belly! Is the baby growing up fast inside there?": "Bom dia, mamãe! Olhe para a sua barriga! O bebê está crescendo rápido aí dentro?",
+                "Yes, Anna, the baby is growing every day. Soon you will hold your little sibling in your arms.": "Sim, Anna, o bebê está crescendo todo dia. Logo você segurará seu irmãozinho nos braços.",
+                "I cannot wait for that day. I already chose some toys to share with the baby.": "Mal posso esperar por esse dia. Eu já escolhi alguns brinquedos para compartilhar com o bebê."
             }
         };
 
+        let player;
         let nativeLanguage = 'pt';
+        let trackingInterval;
 
         const welcomeScreen = document.getElementById('welcome-screen');
         const btnStart = document.getElementById('btn-start');
@@ -387,7 +413,6 @@
         const btnGenerateStudy = document.getElementById('btn-generate-study');
         const studySection = document.getElementById('study-section');
         const studyLinesContainer = document.getElementById('study-lines-container');
-        const videoIframe = document.getElementById('video-iframe');
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('nativeLang');
@@ -427,11 +452,64 @@
             const videoId = extractVideoID(url);
 
             if (videoId) {
-                // Atualiza o atributo src do iframe padrão para carregar o novo vídeo sem restrições offline
-                videoIframe.src = `https://www.youtube.com/embed/${videoId}`;
+                if (player) {
+                    player.loadVideoById(videoId);
+                }
                 urlContainer.classList.add('hidden');
             } else {
                 alert('Por favor, insira uma URL válida do YouTube.');
+            }
+        });
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: '7SRa1M29cNM', 
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                trackingInterval = setInterval(updateTranscriptHighlight, 500);
+            } else {
+                clearInterval(trackingInterval);
+            }
+        }
+
+        function updateTranscriptHighlight() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            const currentTime = player.getCurrentTime();
+            const lines = document.querySelectorAll('.transcript-line');
+            
+            let activeLine = null;
+
+            lines.forEach((line, index) => {
+                const lineTime = parseFloat(line.getAttribute('data-time'));
+                const nextLineTime = lines[index + 1] ? parseFloat(lines[index + 1].getAttribute('data-time')) : Infinity;
+
+                if (currentTime >= lineTime && currentTime < nextLineTime) {
+                    line.classList.add('active');
+                    activeLine = line;
+                } else {
+                    line.classList.remove('active');
+                }
+            });
+
+            if (activeLine) {
+                activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Permitir clicar na linha para pular para o tempo correto do vídeo
+        transcriptBox.addEventListener('click', (e) => {
+            const line = e.target.closest('.transcript-line');
+            if (line && player && typeof player.seekTo === 'function') {
+                const targetTime = parseFloat(line.getAttribute('data-time'));
+                player.seekTo(targetTime, true);
             }
         });
 
